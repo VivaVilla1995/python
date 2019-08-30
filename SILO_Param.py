@@ -1,5 +1,6 @@
 import requests
 import csv
+import pandas as pd
 
 lat = str(input('latitude(eg.-30.00):'))
 lon = str(input('longitude(eg.135.00):'))
@@ -54,6 +55,11 @@ def save_data():
         f_csv.writerow(get_data()[0])
         f_csv.writerow(headers)
         f_csv.writerows(get_data()[1])
-
+        
 if __name__ == '__main__':
     save_data()
+    
+csv_file = r'C:\Users\Viva Villa\Desktop\data.csv'
+csv_data = pd.read_csv(csv_file,low_memory = False)
+csv_df = pd.DataFrame(csv_data)
+csv_df.to_csv(r'C:\Users\Viva Villa\Desktop\output.csv')
