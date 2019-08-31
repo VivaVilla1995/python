@@ -1,4 +1,4 @@
-import requests
+import requests, os
 import csv
 import pandas as pd
 
@@ -52,14 +52,31 @@ def save_data():
     headers = ['date',*get_data()[2]]
     with open(r'C:\Users\Viva Villa\Desktop\data.csv', 'w') as f:
         f_csv = csv.writer(f)
-        f_csv.writerow(get_data()[0])
+        #f_csv.writerow(get_data()[0])
         f_csv.writerow(headers)
         f_csv.writerows(get_data()[1])
         
-if __name__ == '__main__':
+if __name__ == '__main__':  
     save_data()
-    
+
+
+# 整理data.csv之后得到output.csv文件
 csv_file = r'C:\Users\Viva Villa\Desktop\data.csv'
 csv_data = pd.read_csv(csv_file,low_memory = False)
 csv_df = pd.DataFrame(csv_data)
-csv_df.to_csv(r'C:\Users\Viva Villa\Desktop\output.csv')
+csv_df.to_csv(r'C:\Users\Viva Villa\Desktop\output.csv')     
+
+# 打开output.csv文件
+with open(r'C:\Users\Viva Villa\Desktop\output.csv','rt') as f:
+    reader = csv.reader(f,delimiter=',')        # 以逗号问分隔符按列读出数据
+    table = [row for row in reader]
+    table1 = list(map(list,zip(*table)))
+# 实现行列转换得到output1.csv文件    
+with open(r'C:\Users\Viva Villa\Desktop\output1.csv', 'w') as f:
+    f_csv = csv.writer(f)
+    f_csv.writerows(table1)
+# 调整格式得到output2.csv文件
+csv_file = r'C:\Users\Viva Villa\Desktop\output1.csv'
+csv_data = pd.read_csv(csv_file,low_memory = False)
+csv_df = pd.DataFrame(csv_data)
+csv_df.to_csv(r'C:\Users\Viva Villa\Desktop\output2.csv')     
