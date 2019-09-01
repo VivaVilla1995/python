@@ -36,27 +36,27 @@ items = req.get('data')
 #   {'source': 25, 'value': 37.0, 'variable_code': 'max_temp'}, 
 #   {'source': 25, 'value': 20.5, 'variable_code': 'min_temp'}]}]
 
-#param = []
-for i in range(len(items)):
+result = {}
+for i in range(len(items)):                        #外层循环（按日期）
     date = items[i].get('date')
     variables = items[i].get('variables')
-    var1 = []
-    var2 = []
-    for j in range(len(variables)):
+    for j in range(len(variables)):                #内层循环（按属性）
         code = variables[j].get('variable_code')
         value = variables[j].get('value')
-        var1.append(code)
-        var2.append(value)
-    #param.append([date,*var1,*var2])
-        
-        header = ['date','name','value']
-        with open(r'C:\Users\Viva Villa\Desktop\data_%s.csv'%code, 'w') as f:
-            f_csv = csv.writer(f)
-            f_csv.writerow(header)
-            f_csv.writerows(zip(date,var1,var2))
-        csv_data = pd.read_csv(r'C:\Users\Viva Villa\Desktop\data_%s.csv'%code)
-        csv_df = pd.DataFrame(csv_data)
-        csv_df.to_csv(r'C:\Users\Viva Villa\Desktop\data_%s.csv'%code)         
+        if code not in result:                     #如果result中没有这个属性
+            result[code] = []
+        result[code].append([date,code,value])
 
-# param [['2016-01-01', 'daily_rain', 'max_temp', 'min_temp', 0.0, 36.0, 20.0], 
-#        ['2016-01-02', 'daily_rain', 'max_temp', 'min_temp', 0.0, 37.0, 20.5]]
+#{'daily_rain': [['2016-01-01', 'daily_rain', 0.0], ['2016-01-02', 'daily_rain', 0.0],  
+# 'max_temp': [['2016-01-01', 'max_temp', 36.0], ['2016-01-02', 'max_temp', 37.0], 
+# 'min_temp': [['2016-01-01', 'min_temp', 20.0], ['2016-01-02', 'min_temp', 20.5]]
+
+for code in result:
+    header = ['date','name','value']
+    with open(r'C:\Users\Viva Villa\Desktop\data_%s.csv'%code, 'w') as f:
+        f_csv = csv.writer(f)
+        f_csv.writerow(header)
+        f_csv.writerows(result[code])               #按属性code分csv文件
+    csv_data = pd.read_csv(r'C:\Users\Viva Villa\Desktop\data_%s.csv'%code)
+    csv_df = pd.DataFrame(csv_data)
+    csv_df.to_csv(r'C:\Users\Viva Villa\Desktop\data_%s.csv'%code) 
